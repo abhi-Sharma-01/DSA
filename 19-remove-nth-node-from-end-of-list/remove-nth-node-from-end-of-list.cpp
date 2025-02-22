@@ -21,16 +21,17 @@ public:
     }
     ListNode* removeNthFromEnd(ListNode* head, int n) {
         int size = sizeLL(head);
-        ListNode* temp = head;
-        ListNode* prev = NULL;
         //edge case
         if (n == size) {
-            ListNode* newHead = head->next;
-            delete head;
-            return newHead;
+            ListNode* temp = head;
+            head = head->next;
+            delete temp;
+            return head;
         }
         int count =0;
-        while(temp!= NULL){
+        ListNode* temp = head;
+        ListNode* prev = NULL;
+        while(temp){
             count++;
             if(count==size-n+1){
                 prev->next = temp->next;
