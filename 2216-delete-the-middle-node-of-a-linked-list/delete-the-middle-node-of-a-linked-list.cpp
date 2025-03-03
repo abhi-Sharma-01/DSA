@@ -11,28 +11,21 @@
 class Solution {
 public:
     ListNode* deleteMiddle(ListNode* head) {
-        if (head == nullptr || head->next == nullptr) {
-            return nullptr; // If the list is empty or has only one node, return nullptr
+        if(head->next == NULL){
+            return nullptr;
         }
-        ListNode* Slow = head;
-        ListNode* Fast = head;
-        ListNode* prev = nullptr;
-        while(Fast != NULL && Fast->next != NULL){
-            prev = Slow;
-            Slow = Slow->next;
-            Fast = Fast->next->next;
+        ListNode* slow = head;
+        ListNode* fast = head->next;
+        while(fast->next != nullptr && fast->next->next != nullptr){
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        prev->next = Slow->next;
-        delete Slow;
-    
-        /* As now Slow is at middle Node we can stop
-         and implement deletion on the node  */
-        // ListNode* temp = Slow->next;
-        // Slow->val = Slow->next->val;  //This can be the way but fails if size = 2
-        // Slow->next = Slow->next->next;
-        // delete temp;
+        slow->next = slow->next->next;
 
         return head;
+
+
+
 
     }
 };
