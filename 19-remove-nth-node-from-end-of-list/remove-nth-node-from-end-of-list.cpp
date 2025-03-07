@@ -15,32 +15,30 @@ public:
         int count =0;
         while(temp){
             count++;
-            temp=temp->next;
+            temp= temp->next;
         }
         return count;
     }
     ListNode* removeNthFromEnd(ListNode* head, int n) {
-        int size = sizeLL(head);
-        //edge case
-        if (n == size) {
+        int size  = sizeLL(head);
+        if( size == n){
             ListNode* temp = head;
             head = head->next;
             delete temp;
             return head;
         }
-        int count =0;
         ListNode* temp = head;
-        ListNode* prev = NULL;
-        while(temp){
+        int count =0;
+        while(temp!=NULL){
             count++;
-            if(count==size-n+1){
-                prev->next = temp->next;
-                delete temp;
+            if(count == size-n){
                 break;
             }
-            prev = temp;
-            temp = temp->next;
+            temp= temp->next;
         }
+        ListNode* todelete = temp->next;
+        temp->next = temp->next->next;
+        delete todelete;
         return head;
         
     }
