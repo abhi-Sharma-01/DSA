@@ -26,10 +26,15 @@ public:
         // return true;
 
 
-        // M-2  Directly using STL
+        // // M-2  Directly using STL
         
-        if(n <= 0) return false;
-        return __builtin_popcount(n) == 1;
+        // if(n <= 0) return false;
+        // return __builtin_popcount(n) == 1;
+
+        // M-3
+        if(n<=0) return false;
+        if(n==1) return true;
+        return ((n & n-1) ==0);
 
 
     }
