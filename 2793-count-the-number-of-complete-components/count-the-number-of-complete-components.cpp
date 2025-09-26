@@ -1,48 +1,44 @@
 class Solution {
 public:
-    void traversal(int node, vector<vector<int>>& adjList, vector<int>& visited, vector<int>& component) {
-        visited[node] = 1;
-        component.push_back(node);
-        for (int neighbor : adjList[node]) {
-            if (visited[neighbor] == 0) {
-                traversal(neighbor, adjList, visited, component);
+    void traverse(int node,vector<vector<int>> adjList,vector<bool> & isVisited, vector<int>& curr){
+        isVisited[node] = true;
+        curr.push_back(node);
+        for(int neigh: adjList[node]){
+            if(!isVisited[neigh]){
+                traverse(neigh,adjList,isVisited,curr);
             }
         }
     }
-
     int countCompleteComponents(int n, vector<vector<int>>& edges) {
+
         vector<vector<int>> adjList(n);
-        for (auto& edge : edges) {
-            int u = edge[0];
-            int v = edge[1];
+        for(auto edge:edges){
+            int u = edge[0], v = edge[1];
             adjList[u].push_back(v);
-            adjList[v].push_back(u);
+            adjList[v].push_back(u);// only for undirected graph
         }
 
-        vector<int> visited(n, 0);
-        int count = 0;
+        vector<bool> isVisited(n,false);
+        int count =0;
+        // vector<vector<int>> compo;
+        for(int i=0;i<n;i++){
+            if(!isVisited[i]){
+                vector<int> curr;
+                traverse(i,adjList,isVisited,curr);
 
-        for (int i = 0; i < n; i++) {
-            if (visited[i] == 0) {
-                vector<int> component;// for each unvisited node new vector start hoga
-                traversal(i, adjList, visited, component);
-
-                //yeh hai to count total edges inside the component
-                int edgeCount = 0;
-                for (int node : component) {
-                    edgeCount += adjList[node].size();
+                int edgecount =0;
+                for(int node : curr){
+                    edgecount += adjList[node].size();
                 }
 
-                // Total undirected edges is half of total degrees
-                edgeCount /= 2;
+                int size = curr.size();
 
-               
-                int size = component.size();
-                if (edgeCount == (size * (size - 1)) / 2) {
+                if(edgecount == (size*(size-1))){
                     count++;
                 }
             }
         }
         return count;
+        
     }
 };
