@@ -9,49 +9,49 @@ public:
         int n = s.size();
         int res =0;
         int prev =0;
-        // // for loop : using the switch 
-        // for(int i= n-1;i>= 0;--i){
-        //     int val = 0;
-        //     switch(s[i]){
-        //         case 'I':
-        //             val = 1;
-        //             break;
-        //         case 'V':
-        //             val = 5;
-        //             break;
-        //         case 'X':
-        //             val = 10;
-        //             break;
-        //         case 'L':
-        //             val = 50;
-        //             break;
-        //         case 'C':
-        //             val = 100;
-        //             break;
-        //         case 'D':
-        //             val = 500;
-        //             break;
-        //         case 'M':
-        //             val = 1000;
-        //             break;
-        //     }   
-        //     if(val<prev){
-        //         res -= val;
-        //     }else{
-        //         res+= val;
-        //     }
-        //     prev = val;                    
-        // }
-        // for loop : using the mapp
-        for(int i =n-1;i>=0;i--){
-            int val = mapp[s[i]];
-            if(val  < prev){
+        // for loop : using the switch 
+        for(int i= n-1;i>= 0;--i){
+            int val = 0;
+            switch(s[i]){
+                case 'I':
+                    val = 1;
+                    break;
+                case 'V':
+                    val = 5;
+                    break;
+                case 'X':
+                    val = 10;
+                    break;
+                case 'L':
+                    val = 50;
+                    break;
+                case 'C':
+                    val = 100;
+                    break;
+                case 'D':
+                    val = 500;
+                    break;
+                case 'M':
+                    val = 1000;
+                    break;
+            }   
+            if(val<prev){
                 res -= val;
             }else{
-                res += val;
+                res+= val;
             }
-            prev = val;
+            prev = val;                    
         }
+        // // for loop : using the mapp
+        // for(int i =n-1;i>=0;i--){
+        //     int val = mapp[s[i]];
+        //     if(val  < prev){
+        //         res -= val;
+        //     }else{
+        //         res += val;
+        //     }
+        //     prev = val;
+        // }
         return res;        
     }
 };
