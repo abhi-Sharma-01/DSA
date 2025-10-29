@@ -1,17 +1,18 @@
 class Solution {
 public:
-    void traverse(int node,vector<vector<int>> adjList,vector<bool> &isVisited){
-        isVisited[node] = true;
+    void dfs( int node, vector<vector<int>> adjList, vector<bool>&visited){
+        visited[node] = true;
         for(int neigh: adjList[node]){
-            if(!isVisited[neigh]){
-                traverse(neigh,adjList,isVisited);
+            if(!visited[neigh]){
+                dfs(neigh,adjList,visited);
             }
         }
     }
     int findCircleNum(vector<vector<int>>& isConnected) {
+        // first we are gpoing to convert the adjmatrix into adjList
         int n = isConnected.size();
-        vector<vector<int>> adjList(n);
-        for(int i =0;i<n;i++){
+        vector<vector<int>> adjList(n); 
+        for(int i=0;i<n;i++){
             for(int j=0;j<n;j++){
                 if(isConnected[i][j]==1 && i!=j){
                     adjList[i].push_back(j);
@@ -19,16 +20,18 @@ public:
                 }
             }
         }
-        vector<bool> isVisited(n,false);
+
+        // Now we are going to apply dfs approach 
+        vector<bool> visited(n,false);
         int cnt =0;
         for(int i=0;i<n;i++){
-            if(!isVisited[i]){
+            if(!visited[i]){
                 cnt++;
-                traverse(i,adjList,isVisited);
+                dfs(i,adjList,visited);
             }
-            
         }
+
         return cnt;
-        
+
     }
 };
