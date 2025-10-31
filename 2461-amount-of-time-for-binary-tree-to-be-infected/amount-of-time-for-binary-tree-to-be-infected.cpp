@@ -1,92 +1,70 @@
-// /**
-//  * Definition for a binary tree node.
-//  * struct TreeNode {
-//  *     int val;
-//  *     TreeNode *left;
-//  *     TreeNode *right;
-//  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
-//  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-//  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-//  * };
-//  */
-// class Solution {
-// public:
-//     void preorder(TreeNode* node, vector<vector<int>>&edgesList){
-//         if(node == NULL){
-//             return;
-//         }           
-//         // so Before Traversing using recursion we need to store the pair 
-//         if(node->left){
-//             edgesList.push_back({node->val, node->left->val});
-//             preorder(node->left,edgesList);
-//         }
-//         if(node->right){
-//             edgesList.push_back({node->val, node->right->val});
-//             preorder(node->right,edgesList);
-//         }
-//     }
-//     int countNode(TreeNode* root){
-//         if(root== NULL) return 0;
-
-//         return 1+ countNode(root->left) + countNode(root->right);
-//     }
-
-//     int amountOfTime(TreeNode* root, int start) {
-//         TreeNode* node = root;
-//         int V= countNode(root);
-//         vector<vector<int>> edgesList;
-//         preorder(root, edgesList);// Now we are having the edgesList 
-//         cout<<V<<endl;
-//         vector<int> adjList();
-        
-//         return V;
-//     }
-// };
-
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
 public:
-    void buildGraph(TreeNode* node, unordered_map<int, vector<int>>& graph) {
-        if (!node) return;
+    void  graph_edges(TreeNode* node, vector<vector<int>> & edgeList){
+        if(node == NULL) return ;
 
-        if (node->left) {
-            graph[node->val].push_back(node->left->val);
-            graph[node->left->val].push_back(node->val);  // as undirected hai 
-            buildGraph(node->left, graph);
+        if(node->left){
+            edgeList.push_back({node->val,node->left->val});
+            // edgeList[node->left->val].push_back(node->val);
+            graph_edges(node->left,edgeList);
         }
 
-        if (node->right) {
-            graph[node->val].push_back(node->right->val);
-            graph[node->right->val].push_back(node->val);
-            buildGraph(node->right, graph);
+        if(node->right){
+            edgeList.push_back({node->val, node->right->val});
+            // edgeList[node->right->val].push_back(node->val);
+            graph_edges(node->right,edgeList);
         }
     }
-
     int amountOfTime(TreeNode* root, int start) {
-        unordered_map<int, vector<int>> graph;
-        buildGraph(root, graph);
+        vector<vector<int>> edgeList;
+        TreeNode* node = root;
+        graph_edges(node,edgeList);
+        // As in the adjList we have to store the elelment in respective node number but as treenode can have value 
+        // not necessarily similar as that of the index of vector we generally use in the garph 
 
-        unordered_set<int> visited;
+        // vector<vector<int>> adjList(n)// generally used in the graph normally 
+        //  but here we are going to us the 
+
+        map<int, vector<int>> adjList;
+        for(auto edge:edgeList){
+            int u = edge[0], v=edge[1];
+            adjList[u].push_back(v);
+            adjList[v].push_back(u); // we gonna need oth the edges as undirected 
+        }
+
+        unordered_set<int> visited;// so here we have initlaize set which is going to store the element 
         queue<int> q;
         q.push(start);
         visited.insert(start);
+        int min_time = -1;
 
-        int minutes = -1;
-
-        while (!q.empty()) {
+        while(!q.empty()){
             int size = q.size();
-            minutes++;
+            min_time++;
 
-            for (int i = 0; i < size; ++i) {
-                int curr = q.front(); q.pop();
-                for (int neighbor : graph[curr]) {
-                    if (!visited.count(neighbor)) {
-                        visited.insert(neighbor);
-                        q.push(neighbor);
+            for(int i=0;i<size;i++){
+                int node = q.front();
+                q.pop();
+                for(int neigh: adjList[node] ){
+                    if(!visited.count(neigh)){
+                        visited.insert(neigh);
+                        q.push(neigh);
                     }
                 }
             }
         }
 
-        return minutes;
+        return min_time;
     }
 };
