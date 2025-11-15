@@ -1,43 +1,44 @@
 class Solution {
 public:
-    bool check_dfs(int start,vector<vector<int>>&adjList, vector<int>&Visited, vector<int> &pathVis){
-        Visited[start] = 1;
-        pathVis[start] = 1;
-
-        for(auto it :adjList[start]){
-            if(!Visited[it]){
-                if(check_dfs(it,adjList,Visited,pathVis)) return true;
-            }else if(pathVis[it]){
-                return true;
+ bool dfs(int start,vector<vector<int>>&graph,vector<int>&path,vector<int>&visited )
+    {
+        visited[start] =1;
+        path[start]=1;
+        
+        for(int i=0;i<graph[start].size();i++)
+        {
+            if(graph[start][i]==1 && visited[i]==1 && path[i]==1) return true;
+            
+            if(graph[start][i]==1 && visited[i]==0)
+            {
+               if( dfs(i,graph,path,visited)) return true;
             }
             
         }
-
-
-        pathVis[start] = 0;
+        path[start] =0;
+        
         return false;
     }
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+    bool canFinish(int v, vector<vector<int>>& edges) {
+       
+        vector<int>visited(v,0),path(v,0);
+        vector<vector<int>>graph(v,vector<int>(v,0));
         
-        int V = numCourses;
-
-        vector<vector<int>> adjList(V);
-        for(int i=0;i<prerequisites.size();i++){
-            int u = prerequisites[i][0];
-            int v = prerequisites[i][1];
-            adjList[u].push_back(v);
+        for(int i=0;i<edges.size();i++)
+        {
+            int x = edges[i][0];
+            int y = edges[i][1];
+            graph[y][x]=1;
         }
-        vector<int> Visited(V,0);
-        vector<int> pathVis(V,0);
-
-        for(int i=0;i<V;i++){
-            if(!Visited[i]){
-                if(check_dfs(i,adjList,Visited,pathVis)) {
-                    return false;
-                }
+        
+        for(int i=0;i<v;i++)
+        {
+            if(visited[i] ==0)
+            {
+                if(dfs(i,graph,path,visited)) return false;
             }
         }
-
+        
         return true;
     }
 };
