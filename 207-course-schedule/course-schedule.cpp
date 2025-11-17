@@ -1,44 +1,43 @@
 class Solution {
 public:
- bool dfs(int start,vector<vector<int>>&graph,vector<int>&path,vector<int>&visited )
-    {
-        visited[start] =1;
-        path[start]=1;
-        
-        for(int i=0;i<graph[start].size();i++)
-        {
-            if(graph[start][i]==1 && visited[i]==1 && path[i]==1) return true;
-            
-            if(graph[start][i]==1 && visited[i]==0)
-            {
-               if( dfs(i,graph,path,visited)) return true;
-            }
-            
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        int V = numCourses;
+        vector<vector<int>> adjList(V);
+
+        for(auto edge:prerequisites){
+            adjList[edge[0]].push_back(edge[1]);
         }
-        path[start] =0;
-        
-        return false;
-    }
-    bool canFinish(int v, vector<vector<int>>& edges) {
-       
-        vector<int>visited(v,0),path(v,0);
-        vector<vector<int>>graph(v,vector<int>(v,0));
-        
-        for(int i=0;i<edges.size();i++)
-        {
-            int x = edges[i][0];
-            int y = edges[i][1];
-            graph[y][x]=1;
-        }
-        
-        for(int i=0;i<v;i++)
-        {
-            if(visited[i] ==0)
-            {
-                if(dfs(i,graph,path,visited)) return false;
+
+        vector<int> inedge(V);
+        for(int i=0;i<V;i++){
+            for(auto it:adjList[i]){
+                inedge[it]++;
             }
         }
+        queue<int> q;
+        for(int i=0;i<V;i++){
+            if(inedge[i]==0){
+                q.push(i);
+            }
+        }
+        vector<int> topo;
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            topo.push_back(node);
+            for(auto it:adjList[node]){
+                inedge[it]--;
+                if(inedge[it]==0){
+                    q.push(it);
+                }
+            }
         
+        }
+
+        if(topo.size()<V){
+            return false;
+        }
+
         return true;
     }
 };
