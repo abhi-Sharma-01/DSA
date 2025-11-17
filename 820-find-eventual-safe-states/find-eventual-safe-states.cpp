@@ -1,36 +1,40 @@
 class Solution {
 public:
     vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
-        int n = graph.size();
-        vector<int> state(n, 0); // 0 = unvisited, 1 = visiting, 2 = safe
+        int V = graph.size();
 
-        vector<int> safeNodes;
-        for (int i = 0; i < n; ++i) {
-            if (isSafe(i, graph, state)) {
-                safeNodes.push_back(i);
+        vector<int> inedge(V);
+        vector<vector<int>> adjListRev(V);
+        for(int i=0;i<V;i++){
+            for(auto it :graph[i]){
+                adjListRev[it].push_back(i);
+                inedge[i]++;
+            }
+        }
+        queue<int> q;
+        for(int i=0;i<V;i++){
+            if(inedge[i]==0){
+                q.push(i);
             }
         }
 
-        sort(safeNodes.begin(), safeNodes.end());
-        return safeNodes;
-    }
+        vector<int> topo;
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            topo.push_back(node);
+            for(auto it:adjListRev[node]){
+                inedge[it]--;
+                if(inedge[it]==0){
+                    q.push(it);
+                }
+            }
+        }
+        
+        sort(topo.begin(),topo.end());
+
+        return topo;
     
-    bool isSafe(int node, vector<vector<int>>& graph, vector<int>& state) {
-        if (state[node] > 0) {
-            return state[node] == 2;
-        }
         
-        state[node] = 1;
-        for (int next : graph[node]) {
-            if (state[next] == 2) {
-                continue;
-            }
-            if (state[next] == 1 || !isSafe(next, graph, state)) {
-                return false;
-            }
-        }
-        
-        state[node] = 2;
-        return true;
     }
 };
