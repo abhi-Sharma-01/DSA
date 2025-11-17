@@ -1,40 +1,46 @@
 class Solution {
 public:
-    bool dfs(int node, vector<vector<int>>& adjList,vector<int>& visited,vector<int>& pathVisited,vector<int>& result) {
-        visited[node] = 1;
-        pathVisited[node] = 1;
-
-        for (int it : adjList[node]) {
-            if (!visited[it]) {
-                if (dfs(it, adjList, visited, pathVisited, result)) return true;
-            } else if (pathVisited[it]) {
-                return true;
-            }
-        }
-
-        pathVisited[node] = 0;
-        result.push_back(node);
-        return false;
-    }
-
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        int V=  numCourses;
-
+        int V = numCourses;
         vector<vector<int>> adjList(V);
+
         for(auto edge:prerequisites){
             adjList[edge[0]].push_back(edge[1]);
         }
 
-        vector<int> visited(V, 0), pathVisited(V, 0), result;
-
-        for (int i = 0; i < V; ++i) {
-            if (!visited[i]) {
-                if (dfs(i, adjList, visited, pathVisited, result)) {
-                    return {}; 
-                }
+        vector<int> inedge(V);
+        for(int i=0;i<V;i++){
+            for(auto it:adjList[i]){
+                inedge[it]++;
             }
         }
+        queue<int> q;
+        for(int i=0;i<V;i++){
+            if(inedge[i]==0){
+                q.push(i);
+            }
+        }
+        vector<int> topo;
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            topo.push_back(node);
+            for(auto it:adjList[node]){
+                inedge[it]--;
+                if(inedge[it]==0){
+                    q.push(it);
+                }
+            }
+        
+        }
 
-        return result;
+        if(topo.size()<V){
+            return {};
+        }
+
+        reverse(topo.begin(),topo.end());
+
+        return topo;
+        
     }
 };
