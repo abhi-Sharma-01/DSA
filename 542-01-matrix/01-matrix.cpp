@@ -1,20 +1,20 @@
 class Solution {
-public: 
-                        // Here We need to find the distance of the nearest zero 
-
+public:
     vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+
         int n = mat.size();
         int m = mat[0].size();
 
         vector<vector<int>> Vis(n,vector<int>(m,0));
         vector<vector<int>> dis(n,vector<int>(m,-1));
 
-        queue<pair<pair<int,int>,int>> q;
+        queue<pair<pair<int,int>,int>> q; // here it will capture the indexes as well as the distance 
 
         for(int i =0;i<n;i++){
-            for(int j=0;j<m;j++){
-                if(mat[i][j]==0){
-                    Vis[i][j]= 1;
+            for(int j = 0;j<m;j++){
+                if(mat[i][j]== 0){
+                    Vis[i][j] = 1;
+                    dis[i][j] = 0;
                     q.push({{i,j},0});
                 }
             }
@@ -30,20 +30,17 @@ public:
             q.pop();
 
             dis[r][c] = d;
-
-            for(int i=0;i<4;i++){  // check all the direction
+            for(int i=0;i<4;i++){
                 int nr = r + drow[i];
                 int nc = c + dcol[i];
 
-                if(nr>=0 && nr<n && nc>=0  && nc<m && Vis[nr][nc] == 0 && mat[nr][nc]== 1 && dis[nr][nc]== -1){
+                if(nr>=0 && nr<n && nc>=0 && nc<m && Vis[nr][nc]==0 ){
                     Vis[nr][nc] = 1;
                     q.push({{nr,nc},d+1});
                 }
-
             }
         }
 
-        return dis;
-        
+        return dis;      
     }
 };
