@@ -1,59 +1,65 @@
 class Solution {
 public:
-    void dfs(int r, int c, vector<vector<char>>&board, vector<vector<int>> &Vis){
-        Vis[r][c] = 1;
 
-        int n = board.size();
-        int m = board[0].size();
+    void dfs(int row,int col, vector<vector<char>> &board , vector<vector<int>> &Vis){
+        int m  = board.size();
+        int n = board[0].size();
+
+        Vis[row][col] = 1;
 
         vector<int> drow = {-1,0,1,0};
         vector<int> dcol = {0,1,0,-1};
 
-        //checking the four directions 
-        for(int i=0;i<4;i++){
-            int nr = r + drow[i];
-            int nc = c +  dcol[i];
+        for(int i =0;i<4 ;i++){
 
-            if(nr>=0 && nr<n && nc>=0 && nc<m && Vis[nr][nc] == 0 && board[nr][nc] == 'O'){
-                dfs(nr,nc,board,Vis);
+            int nr = row + drow[i];
+            int nc = col + dcol[i];
+
+            if(nr>=0 && nr<m && nc>=0 && nc< n && board[nr][nc]=='O' && Vis[nr][nc]==0){
+                dfs(nr,nc, board,Vis);
             }
         }
     }
-    void solve(vector<vector<char>>& board) { 
+    void solve(vector<vector<char>>& board) {
+        int m = board.size();
+        int n = board[0].size();
 
-            // So  The approach would be like we will firstly find the 'O' at the boundries and then using DFS to find all the neighbour which is connected to it will region i.e not be able to surround then using X 
+        vector<vector<int>> Vis(m,vector<int> (n,0));
+        // so our goal is to capture all the 'O' at the boundry
 
-            // step 1 : find the "O" at th boundry and apply dfs on each and mark it visited 
-        int n = board.size();
-        int m = board[0].size();
-        vector<vector<int>> Vis(n,vector<int>(m,0));
+        // to check at the boundary we need to capture all the region connected to it with 'O' using DFS we can get all the points that are somehow connected with the edge 'O'
 
-        for(int j=0;j<m;j++){        // Here We are checking the first and the last rows if any O's index exist then check dfs
-            if(board[0][j]=='O' && Vis[0][j] == 0){
-                dfs(0,j,board,Vis);
+        //  Checking the first row and the last row for all the columns 
+       
+       for(int j = 0;j<n;j++){
+            //first row
+            if(board[0][j]=='O' && Vis[0][j]==0){
+                dfs(0,j,board, Vis);
             }
-            if(board[n-1][j]=='O' && Vis[n-1][j] == 0){
-                dfs(n-1,j,board,Vis);
+            if(board[m-1][j]=='O' && Vis[m-1][j]==0){
+                dfs(m-1,j,board, Vis);
             }
-        }
+       }
 
-        for(int i =0;i<n;i++){
-            if(board[i][0]== 'O' && Vis[i][0]==0){
-                dfs(i,0,board,Vis);
+       // checking the first column and the last columns 
+
+       for(int i=0;i<m;i++){
+            //first row
+            if(board[i][0]=='O' && Vis[i][0]==0){
+                dfs(i,0,board, Vis);
             }
-
-            if(board[i][m-1]== 'O' && Vis[i][m-1]==0){
-                dfs(i,m-1,board,Vis);
+            if(board[i][n-1]=='O' && Vis[i][n-1] == 0){
+                dfs(i,n-1,board, Vis);
             }
-        }
+       }
 
-        for(int i =0;i<n;i++){
-            for(int j=0;j<m;j++){
-                if(board[i][j]=='O' && Vis[i][j]==0){
+       for(int i =0;i<m;i++){
+            for(int j =0;j<n;j++){
+                if(Vis[i][j]== 0 && board[i][j]=='O'){
                     board[i][j] = 'X';
                 }
             }
-        }
-    
+       }      
+
     }
 };
