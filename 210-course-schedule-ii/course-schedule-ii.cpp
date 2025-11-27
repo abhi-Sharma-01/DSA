@@ -1,22 +1,19 @@
 class Solution {
 public:
-    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        int V = numCourses;
+    vector<int> findOrder(int V, vector<vector<int>>& prereq) {
+        
         vector<vector<int>> adjList(V);
-
-        for(auto edge:prerequisites){
+        vector<int> indegree(V);
+        for(auto edge: prereq){
             adjList[edge[0]].push_back(edge[1]);
+            indegree[edge[1]]++;
         }
-
-        vector<int> inedge(V);
-        for(int i=0;i<V;i++){
-            for(auto it:adjList[i]){
-                inedge[it]++;
-            }
-        }
+        // stack<int> st;
         queue<int> q;
+
         for(int i=0;i<V;i++){
-            if(inedge[i]==0){
+            if(indegree[i]== 0){
+                // st.push(i);
                 q.push(i);
             }
         }
@@ -25,22 +22,16 @@ public:
             int node = q.front();
             q.pop();
             topo.push_back(node);
-            for(auto it:adjList[node]){
-                inedge[it]--;
-                if(inedge[it]==0){
-                    q.push(it);
+            for(auto nbr : adjList[node]){
+                indegree[nbr]--;
+                if(indegree[nbr]==0){
+                    q.push(nbr);
                 }
             }
-        
-        }
-
-        if(topo.size()<V){
-            return {};
-        }
+        }   
+        if(topo.size()< V) return {};
 
         reverse(topo.begin(),topo.end());
-
         return topo;
-        
     }
 };
