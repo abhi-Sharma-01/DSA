@@ -1,38 +1,39 @@
 class Solution {
 public:
-    bool check_dfs(int node, vector<vector<int>>&adjList,vector<int>&Vis,vector<int> &pathVis){
-        Vis[node] = 1;
-        pathVis[node] = 1;
+    // Method 2 : using the  Topo Sort 
+    bool canFinish(int V, vector<vector<int>>& prereq) {
 
-        for(auto nbr: adjList[node]){
-            if(!Vis[nbr]){
-                if(check_dfs(nbr, adjList, Vis, pathVis)) return true;
-            }else if(pathVis[nbr]){
-                return true;
-            }
-        }
-
-        pathVis[node] = 0; // we need to unvisit the node 
-        return false;
-    }
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        
-        int V = numCourses;
-        if(prerequisites.size()==0) return true;
         vector<vector<int>> adjList(V);
-        for(auto edge:prerequisites){
-            adjList[edge[1]].push_back(edge[0]);
+        vector<int> indegree(V,0);
+        for(auto edge: prereq){
+            adjList[edge[0]].push_back(edge[1]);
+            indegree[edge[1]]++;
         }
-        vector<int> Vis(V,0);
-        vector<int> pathVis(V,0);
-
-
-        for(int i=0;i<V; i++){
-            if(!Vis[i]){
-                if(check_dfs(i,adjList,Vis,pathVis)) return false;
+        // we need to find the nodes with zero incoming edges and keep removing them use queue to store them
+        queue<int> q;
+        for(int i=0;i<V;i++){
+            if(indegree[i] == 0){
+                q.push(i);
             }
         }
 
-        return true;// i.e No cycle found , so we can complete the courses without any deadlock        
+        vector<int> topo;
+
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            topo.push_back(node);
+            for(auto nbr: adjList[node]){
+                indegree[nbr]--;
+                if(indegree[nbr]== 0){
+                    q.push(nbr);
+                }
+            }
+        }
+
+        if(topo.size()== V) return true;
+
+        return false;
+
     }
 };
