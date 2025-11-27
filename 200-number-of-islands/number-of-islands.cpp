@@ -1,40 +1,44 @@
 class Solution {
 public:
-    void dfs(int r,int c,vector<vector<char>>&grid, vector<vector<int>>&Vis){
-        Vis[r][c] = 1;
-        int m = grid.size();
-        int n = grid[0].size();
-        
+    int numIslands(vector<vector<char>>& grid) {
+        // Another Method using the BFS
+        // where we atre find the first land and count it and push it into the queue and make all the land connected to it as Vis;
+
+        int n = grid.size();
+        int m = grid[0].size();
+
+        int countIsland = 0;
+        queue<pair<int,int>> q;
         vector<int> drow = {-1,0,1,0};
         vector<int> dcol = {0,1,0,-1};
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j] == '0' ) continue;
 
-        for(int i=0;i<4;i++){
-            int nr = r + drow[i];
-            int nc = c + dcol[i];
+                countIsland++;
 
-            if(nr>=0 && nr<m && nc>=0 && nc<n && grid[nr][nc]=='1' && !Vis[nr][nc]){
-                dfs(nr,nc,grid,Vis);
-            }
-        }
+                q.push({i,j});
+                grid[i][j] = '0';
+                // Now what we will we visiting all the land connected to it 
 
-    }
-    int numIslands(vector<vector<char>>& grid) {
-        int m = grid.size();
-        int n = grid[0].size();
 
-        vector<vector<int>> Vis(m,vector<int> (n,0));
-        
-        int count =0;
-    
-        for(int i =0;i<m;i++){
-            for(int j =0;j<n;j++){
-                if(!Vis[i][j] && grid[i][j]=='1'){
-                    dfs(i,j,grid,Vis);
-                    count++;
+                while(!q.empty()){
+                    int r = q.front().first;
+                    int c = q.front().second;
+                    q.pop();
+
+                    for(int i=0;i<4;i++){
+                        int nr = r + drow[i];
+                        int nc = c + dcol[i];
+
+                        if(nr>=0 && nr< n && nc>=0 && nc<m  && grid[nr][nc]=='1'){
+                            grid[nr][nc] = '0';
+                            q.push({nr,nc});
+                        }
+                    }
                 }
             }
         }
-        return count;
-        
+        return countIsland;
     }
 };
